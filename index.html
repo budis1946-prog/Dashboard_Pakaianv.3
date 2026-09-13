@@ -4,7 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Penjualan Pakaian</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f9fafb; color: #1f2937; padding: 16px; line-height: 1.5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px; }
+        @media (min-width: 768px) { .header { flex-direction: row; align-items: center; } }
+        .header h1 { font-size: 24px; font-weight: 700; color: #111827; }
+        .subtitle { font-size: 14px; color: #6b7280; margin-top: 4px; }
+        .btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: background-color 0.2s; }
+        .btn-primary { background-color: #2563eb; color: #ffffff; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-secondary { background-color: #f3f4f6; color: #4b5563; }
+        .btn-secondary:hover { background-color: #e5e7eb; }
+        .btn-xs { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .btn-edit { background-color: #dbeafe; color: #2563eb; }
+        .btn-delete { background-color: #fee2e2; color: #dc2626; }
+        .stats-grid { display: grid; grid-template-cols: repeat(2, 1fr); gap: 16px; margin-bottom: 32px; }
+        @media (min-width: 768px) { .stats-grid { grid-template-cols: repeat(4, 1fr); } }
+        .stat-card { background-color: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb; }
+        .stat-title { font-size: 12px; font-weight: 500; color: #9ca3af; text-transform: uppercase; }
+        .stat-value { font-size: 20px; font-weight: 700; margin-top: 4px; }
+        .text-blue { color: #2563eb; }
+        .text-green { color: #16a34a; }
+        .table-container { background-color: #ffffff; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden; }
+        .table-header { padding: 16px; border-bottom: 1px solid #e5e7eb; }
+        .table-header h2 { font-size: 16px; font-weight: 600; color: #374151; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; min-width: 900px; }
+        th { background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; padding: 16px; color: #6b7280; font-weight: 500; }
+        td { padding: 16px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        tr:hover td { background-color: #f9fafb; }
+        .product-img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #e5e7eb; }
+        .text-muted { color: #6b7280; font-size: 12px; display: block; margin-top: 2px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .text-center { text-align: center; }
+        .action-spacer { display: flex; gap: 8px; justify-content: center; }
+        .empty-state { padding: 32px; text-align: center; color: #9ca3af; }
+        .hidden { display: none !important; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; padding: 16px; z-index: 1000; }
+        .modal.active { display: flex; }
+        .modal-content { background-color: #ffffff; width: 100%; max-width: 450px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .modal-header { padding: 16px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 18px; font-weight: 700; color: #374151; }
+        .close-btn { background: none; border: none; font-size: 24px; color: #9ca3af; cursor: pointer; }
+        form { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-height: 75vh; overflow-y: auto; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 12px; font-weight: 600; color: #6b7280; }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px; font-size: 14px; outline: none; font-family: inherit; }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+        .form-group input:focus, .form-group textarea:focus { border-color: #2563eb; }
+        .form-row { display: grid; grid-template-cols: 1fr 1fr; gap: 16px; }
+        .preview-container { margin-top: 8px; }
+        .preview-container img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid #e5e7eb; }
+        .form-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
+    </style>
 </head>
 <body>
 
@@ -13,7 +68,7 @@
         <header class="header">
             <div>
                 <h1>Dashboard Penjualan Pakaian</h1>
-                <p class="subtitle">Kelola produk, stok terjual, margin, dan laba bersih lokal di browser Anda.</p>
+                <p class="subtitle">Kelola produk dengan deskripsi, stok, margin, dan laba bersih di browser Anda.</p>
             </div>
             <button onclick="openModal()" class="btn btn-primary">+ Tambah Produk</button>
         </header>
@@ -48,7 +103,7 @@
                     <thead>
                         <tr>
                             <th>Foto</th>
-                            <th>Nama Pakaian</th>
+                            <th>Nama & Keterangan</th>
                             <th>Kategori</th>
                             <th>Harga Beli</th>
                             <th>Harga Jual</th>
@@ -68,7 +123,7 @@
         </section>
     </div>
 
-    <!-- MODAL FORM (TAMBAH / EDIT) -->
+    <!-- MODAL FORM -->
     <div id="product-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -77,7 +132,6 @@
             </div>
             <form id="product-form" onsubmit="saveProduct(event)">
                 <input type="hidden" id="form-id">
-                
                 <div class="form-group">
                     <label>Foto Pakaian</label>
                     <input type="file" id="form-foto" accept="image/*" onchange="previewImage(event)">
@@ -88,6 +142,10 @@
                 <div class="form-group">
                     <label>Nama Pakaian</label>
                     <input type="text" id="form-nama" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi Produk</label>
+                    <textarea id="form-deskripsi" placeholder="Tulis rincian bahan, ukuran, atau warna pakaian..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>Kategori</label>
@@ -113,15 +171,3 @@
                         <input type="number" id="form-terjual" required>
                     </div>
                 </div>
-                
-                <div class="form-actions">
-                    <button type="button" onclick="closeModal()" class="btn btn-secondary">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
