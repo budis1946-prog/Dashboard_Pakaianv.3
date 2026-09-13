@@ -34,12 +34,12 @@ function previewImage(event) {
         preview.src = reader.result;
         document.getElementById('preview-container').classList.remove('hidden');
     }
-    if(event.target.files[0]) {
+    if(event.target.files.length > 0) {
         reader.readAsDataURL(event.target.files[0]);
     }
 }
 
-// 2. Load & Tampilkan Produk
+// 2. Load & Tampilkan Produk beserta Deskripsi
 function loadProducts() {
     const transaction = db.transaction(STORE_NAME, "readonly");
     const store = transaction.objectStore(STORE_NAME);
@@ -72,13 +72,18 @@ function loadProducts() {
 
                 let imgSrc = "https://placeholder.com";
                 if (prod.foto) {
-                    imgSrc = prod.foto; // base64 string
+                    imgSrc = prod.foto; // data url base64 string
                 }
+
+                const deskripsiSingkat = prod.deskripsi ? prod.deskripsi : "-";
 
                 const row = `
                     <tr>
                         <td><img src="${imgSrc}" class="product-img"></td>
-                        <td class="font-medium">${prod.nama}</td>
+                        <td>
+                            <span class="font-medium">${prod.nama}</span>
+                            <span class="text-muted" title="${deskripsiSingkat}">${deskripsiSingkat}</span>
+                        </td>
                         <td>${prod.kategori}</td>
                         <td>${formatRupiah(prod.hargaBeli)}</td>
                         <td class="font-medium">${formatRupiah(prod.hargaJual)}</td>
@@ -101,27 +106,28 @@ function loadProducts() {
         document.getElementById("stat-total-produk").innerText = totalProduk;
         document.getElementById("stat-jumlah-terjual").innerText = jumlahTerjual;
         document.getElementById("stat-total-penjualan").innerText = formatRupiah(totalPenjualan);
-        document.getElementById("stat-laba-bersih").innerText = formatRupiah(totalLabaBersih);
+        document.getElementById("stat-laba-interal").innerText = formatRupiah(totalLabaBersih);
     };
 }
 
-// 3. Simpan / Update Produk
+// 3. Simpan / Update Produk ke Database Browser
 function saveProduct(e) {
     e.preventDefault();
     
     const id = document.getElementById("form-id").value;
     const nama = document.getElementById("form-nama").value;
+    const deskripsi = document.getElementById("form-deskripsi").value;
     const kategori = document.getElementById("form-kategori").value;
     const hargaBeli = Number(document.getElementById("form-harga-beli").value);
     const hargaJual = Number(document.getElementById("form-harga-jual").value);
     const stok = Number(document.getElementById("form-stok").value);
     const terjual = Number(document.getElementById("form-terjual").value);
-    const fotoInput = document.getElementById("form-foto").files[0];
+    const fotoInput = document.getElementById("form-foto").files;
 
     const executeSave = (base64Foto) => {
         const transaction = db.transaction(STORE_NAME, "readwrite");
         const store = transaction.objectStore(STORE_NAME);
-        const productData = { nama, kategori, hargaBeli, hargaJual, stok, terjual };
+        const productData = { nama, deskripsi, kategori, hargaBeli, hargaJual, stok, terjual };
 
         if (id) {
             productData.id = Number(id);
@@ -145,18 +151,18 @@ function saveProduct(e) {
         }
     };
 
-    if (fotoInput) {
+    if (fotoInput.length > 0) {
         const reader = new FileReader();
         reader.onload = function() {
             executeSave(reader.result);
         };
-        reader.readAsDataURL(fotoInput);
+        reader.readAsDataURL(fotoInput[0]);
     } else {
         executeSave(null);
     }
 }
 
-// 4. Edit Form Loader
+// 4. Isi Form saat Mengedit Data
 function editProduct(id) {
     const transaction = db.transaction(STORE_NAME, "readonly");
     const store = transaction.objectStore(STORE_NAME);
@@ -166,6 +172,7 @@ function editProduct(id) {
         const prod = request.result;
         document.getElementById("form-id").value = prod.id;
         document.getElementById("form-nama").value = prod.nama;
+        document.getElementById("form-deskripsi").value = prod.deskripsi || "";
         document.getElementById("form-kategori").value = prod.kategori;
         document.getElementById("form-harga-beli").value = prod.hargaBeli;
         document.getElementById("form-harga-jual").value = prod.hargaJual;
@@ -198,12 +205,13 @@ function deleteProduct(id) {
     }
 }
 
-// Modal Controller
+// Pengendali Modal
 function openModal(title = "Tambah Produk") {
     document.getElementById("modal-title").innerText = title;
     document.getElementById("product-modal").classList.add("active");
 }
 
+// Reset dan Tutup Modal
 function closeModal() {
     document.getElementById("product-modal").classList.remove("active");
     document.getElementById("product-form").reset();

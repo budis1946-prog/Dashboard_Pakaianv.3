@@ -166,6 +166,7 @@ table {
     border-collapse: collapse;
     text-align: left;
     font-size: 14px;
+    min-width: 950px; /* Menjamin kolom lebar tidak bertabrakan di HP */
 }
 
 th {
@@ -192,6 +193,18 @@ tr:hover td {
     object-fit: cover;
     border-radius: 6px;
     border: 1px solid #e5e7eb;
+}
+
+/* Deskripsi Singkat di bawah nama produk */
+.text-muted {
+    color: #6b7280;
+    font-size: 12px;
+    display: block;
+    margin-top: 2px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .font-medium { font-weight: 500; }
@@ -285,16 +298,24 @@ form {
 }
 
 .form-group input[type="text"],
-.form-group input[type="number"] {
+.form-group input[type="number"],
+.form-group textarea {
     width: 100%;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     padding: 8px;
     font-size: 14px;
     outline: none;
+    font-family: inherit;
 }
 
-.form-group input:focus {
+.form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
