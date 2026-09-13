@@ -188,11 +188,13 @@ tr:hover td {
 }
 
 .product-img {
-    width: 30%;
+    width: 80px;         /* Diperbesar dari 48px */
+    height: 80px;        /* Diperbesar dari 48px */
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 8px;  /* Sudut gambar sedikit lebih lembut */
     border: 1px solid #e5e7eb;
 }
+
 
 /* Deskripsi Singkat di bawah nama produk */
 .text-muted {
