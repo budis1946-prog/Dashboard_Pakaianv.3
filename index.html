@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Penjualan Pakaian</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <div>
+                <h1>Dashboard Penjualan Pakaian</h1>
+                <p class="subtitle">Kelola produk, stok terjual, margin, dan laba bersih lokal di browser Anda.</p>
+            </div>
+            <button onclick="openModal()" class="btn btn-primary">+ Tambah Produk</button>
+        </header>
+
+        <!-- STATS CARD -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <p class="stat-title">Total Produk</p>
+                <p id="stat-total-produk" class="stat-value">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-title">Jumlah Terjual</p>
+                <p id="stat-jumlah-terjual" class="stat-value">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-title">Total Penjualan</p>
+                <p id="stat-total-penjualan" class="stat-value text-blue">Rp0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-title">Laba Bersih</p>
+                <p id="stat-laba-bersih" class="stat-value text-green">Rp0</p>
+            </div>
+        </section>
+
+        <!-- TABLE DAFTAR PAKAIAN -->
+        <section class="table-container">
+            <div class="table-header">
+                <h2>Daftar Pakaian</h2>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Nama Pakaian</th>
+                            <th>Kategori</th>
+                            <th>Harga Beli</th>
+                            <th>Harga Jual</th>
+                            <th>Stok</th>
+                            <th>Terjual</th>
+                            <th>Margin/Pcs</th>
+                            <th>Laba Bersih</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-table-body">
+                        <!-- Data dimasukkan via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="empty-state" class="empty-state">Belum ada produk.</div>
+        </section>
+    </div>
+
+    <!-- MODAL FORM (TAMBAH / EDIT) -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Tambah Produk</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="product-form" onsubmit="saveProduct(event)">
+                <input type="hidden" id="form-id">
+                
+                <div class="form-group">
+                    <label>Foto Pakaian</label>
+                    <input type="file" id="form-foto" accept="image/*" onchange="previewImage(event)">
+                    <div id="preview-container" class="preview-container hidden">
+                        <img id="form-preview" src="" alt="Preview">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nama Pakaian</label>
+                    <input type="text" id="form-nama" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <input type="text" id="form-kategori" required placeholder="Misal: Dress, Kemeja, Kaos">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Harga Beli (Rp)</label>
+                        <input type="number" id="form-harga-beli" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga Jual (Rp)</label>
+                        <input type="number" id="form-harga-jual" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Stok</label>
+                        <input type="number" id="form-stok" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Terjual</label>
+                        <input type="number" id="form-terjual" required>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal()" class="btn btn-secondary">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
