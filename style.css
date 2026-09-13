@@ -188,8 +188,7 @@ tr:hover td {
 }
 
 .product-img {
-    width: 48px;
-    height: 48px;
+    width: 30%;
     object-fit: cover;
     border-radius: 6px;
     border: 1px solid #e5e7eb;
